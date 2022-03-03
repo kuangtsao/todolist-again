@@ -9,6 +9,10 @@ const exphbs = require('express-handlebars')
 app.engine('handlebars', exphbs({ defaultLayout: 'main'}))
 app.set('view engine', 'handlebars')
 
+// body parser
+
+app.use(express.urlencoded({ extended: true }))
+
 // mongodb
 
 const mongoose = require('mongoose')
@@ -33,6 +37,17 @@ app.get('/', (req, res) => {
     .lean()
     .then(todos => res.render('index', { todos }))
     .catch(error => console.error(error))
+})
+// new
+app.get('/todos/new', (req, res) => {
+  return res.render('new')
+})
+
+app.post('/todos', (req, res) => {
+  const name = req.body.name 
+  return Todo.create({ name })
+    .then(() => res.redirect('/'))
+    .catch(error => console.log(error))
 })
 
 app.listen(port, () => {
