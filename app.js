@@ -25,9 +25,14 @@ db.once('open', () => {
   console.log('mongodb connected!')
 })
 
+// load data model
+const Todo = require('./models/todo')
 // routes
 app.get('/', (req, res) => {
-  res.render('index')
+  Todo.find()
+    .lean()
+    .then(todos => res.render('index', { todos }))
+    .catch(error => console.error(error))
 })
 
 app.listen(port, () => {
